@@ -4,7 +4,7 @@ namespace app\models;
 
 use yii\db\ActiveRecord;
 use yii\web\UploadedFile;
-
+use yii\imagine\Image;
 class User extends ActiveRecord
 {
     public $avatarFile;
@@ -138,7 +138,7 @@ class User extends ActiveRecord
     }
 
 
-    public function getUser(){
-
+    public function saveAvatar($srcImage,$aimImage){
+        Image::thumbnail($srcImage,100,100)->save($aimImage,['quality'=>100]);
     }
 }
