@@ -4,16 +4,14 @@ use yii\helpers\Html;
 
 
 
-$this->title = 'Picture（最新）';
+$this->title = '我的Picture';
 $this->params['breadcrumbs'][] = $this->title;
-$userModel = new \app\models\User;
+$uid = \Yii::$app->session['uid'];
 ?>
-<?php foreach ($model->showByTime() as $item): ?>
-    <?php $user = $userModel->findeByUid($item->uid); ?>
+
+<?php foreach ($model->showByUid($uid) as $item): ?>
     <div class="row">
         <div>
-            <img width="25px" style="border-radius: 50% !important; margin-right:5px;" src="../uploads/<?=$user->avatar?>">
-            <span><?=$user->name?></span>
             <h4><?=$item->title?></h4>
         </div>
 
@@ -26,6 +24,7 @@ $userModel = new \app\models\User;
     </div>
 
 <?php endforeach; ?>
+
 
 
 

@@ -3,10 +3,11 @@
 namespace app\models;
 
 use yii\db\ActiveRecord;
-
+use yii\web\UploadedFile;
+use yii\imagine\Image;
 class User extends ActiveRecord
 {
-
+    public $avatarFile;
     public $rememberme;
 
     public static function tablename(){
@@ -17,7 +18,7 @@ class User extends ActiveRecord
         return [
             'login' => ['uid','name','password','login_time'],
             'signup' => ['uid','name','password','avatar','profile','sex','email','regist_time','login_time'],
-            'updata' => ['uid','name','avatar','profile','sex','email']
+            'update' => ['uid','name','avatar','profile','sex','email']
         ];
     }
 
@@ -25,8 +26,10 @@ class User extends ActiveRecord
 
     public  function  rules(){
         return  [
-            [['name','password','sex','email'],'required','message'=>'请填写此项','on'=>['signup','updata']],
+            [['name','password','sex','email'],'required','message'=>'请填写此项','on'=>'signup'],
             [['name','password'],'required','message'=>'请填写此项','on'=>'login'],
+            ['avatarFile','file','maxSize'=>1024*100,'maxFiles'=>1,'extensions'=>'png,jpg','on'=>'update'],
+            ['avatarFile','required','message'=>'图片为空','on'=>'update'],
             ['name','validateName','on'=>'signup'],
             ['rememberme','boolean','on'=>'login'],
             ['password','validatePassword','message'=>'密码错误','on'=>'login'],
@@ -45,6 +48,7 @@ class User extends ActiveRecord
             'regist_time'=>'注册时间',
             'login_time'=>'登录时间',
             'rememberme'=>'记住我',
+            'avatarFile'=>'修改头像',
         ];
     }
 
@@ -64,6 +68,10 @@ class User extends ActiveRecord
             $this->addError($attribute,'用户名已存在');
         }
     }
+    public function validateAvatarPath($attribute,$params){
+
+    }
+
 
     public static function findeByUid($uid){
         return static::findOne(['uid'=>$uid]);
@@ -110,12 +118,45 @@ class User extends ActiveRecord
         return false;
     }
 
-    public function updata($data,$scenario = 'updata'){
+    public function updateAvatar($data,$scenario = 'update'){
         $this->scenario = $scenario;
+        //上传文件目录地址
+        $path = \Yii::$app->basePath.'/uploads/';
+        if ($this->load($data)&&$this->validate()){
+            //通过头像的上传时间命名（高并发时有可能会出错）
+            $datatime = new \DateTime;
+            $filename = $datatime->format('YmdHis');
+            //初始化头像
+            $this->avatarFile = UploadedFile::getInstance($this,'avatarFile');
+            //获取要更改的记录
+            $user = self::findeByUid(\Yii::$app->session['uid']);
+            //删除原头像文件
+            if ($user->avatar!=null){
+                self::deleteAvatar($user,$path);
+            }
+            $user->avatar = $filename.'.'.$this->avatarFile->extension;
+            $user->profile = $this->profile;
+            //生成文件完整地址
+            $srcImage = $path.$user->avatar;
+            //可以封装成事务
+            if ($user->update(false)){
+                $this->avatarFile->saveAs($srcImage);
+                //转换成100*100的缩略图
+                self::saveAvatar($srcImage,$srcImage);
+                return true;
+            }
+        }
+        return false;
+
     }
 
 
-    public function getUser(){
+    public function saveAvatar($srcImage,$aimImage){
+        Image::thumbnail($srcImage,100,100)->save($aimImage,['quality'=>100]);
+    }
 
+    public function deleteAvatar($model,$path){
+        $urlImage = $path.$model->avatar;
+        return unlink($urlImage);
     }
 }

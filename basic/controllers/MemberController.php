@@ -14,6 +14,7 @@ use yii\web\Controller;
 
 class MemberController extends Controller
 {
+
     public function actionSignup(){
         if (isset(\Yii::$app->session['islogin'])){
             $this->redirect(['member/logout']);
@@ -60,6 +61,29 @@ class MemberController extends Controller
             \Yii::$app->end();
         }
 
+        $user = $model->findeByUid(\Yii::$app->session['uid']);
+
         return $this->render('profile',['user'=>$user]);
     }
+
+    public function actionUpdate(){
+        $model = new User;
+        if (isset(\Yii::$app->session['islogin'])){
+            $user = $model->findeByUid(\Yii::$app->session['uid']);
+        }else{
+            $this->redirect(['member/login']);
+            \Yii::$app->end();
+        }
+
+        if (\Yii::$app->request->isPost){
+            if ($model->updateAvatar(\Yii::$app->request->post())){
+                $this->redirect(['member/profile']);
+                \Yii::$app->end();
+            }
+        }
+
+        $user = $model->findeByUid(\Yii::$app->session['uid']);
+        return $this->render('update',['model'=>$model,'user'=>$user]);
+    }
+
 }

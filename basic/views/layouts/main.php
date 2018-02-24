@@ -39,8 +39,11 @@ AppAsset::register($this);
             ['label' => '登录', 'url' => ['/member/login']],
             ['label' => '注册', 'url' => ['/member/signup']],
             ['label' => '个人中心', 'url' => ['/member/profile']],
-            ['label' => '主页（照片展示）', 'url' => ['/picture/index']],
-            ['label' => '照片上传', 'url' => ['/picture/upload']],
+            ['label' => '主页（最新）', 'url' => ['/picture/index']],
+            ['label' => '主页（热门）', 'url' => ['/picture/hotphotoes']],
+            ['label' => '主页（我的）', 'url' => ['/picture/myphotoes']],
+            ['label' => '主页（关注）', 'url' => ['/picture/fellowphotoes']],
+            ['label' => '照片上传', 'url' => ['/picture/update']],
             !isset(Yii::$app->session['islogin']) ? (
                 ['label' => 'Login', 'url' => ['/member/login']]
             ) : (
