@@ -120,16 +120,29 @@ class User extends ActiveRecord
 
     public function updateAvatar($data,$scenario = 'update'){
         $this->scenario = $scenario;
-        //加删除旧图像功能
+        //上传文件目录地址
+        $path = \Yii::$app->basePath.'/uploads/';
         if ($this->load($data)&&$this->validate()){
+            //通过头像的上传时间命名（高并发时有可能会出错）
             $datatime = new \DateTime;
             $filename = $datatime->format('YmdHis');
+            //初始化头像
             $this->avatarFile = UploadedFile::getInstance($this,'avatarFile');
+            //获取要更改的记录
             $user = self::findeByUid(\Yii::$app->session['uid']);
+            //删除原头像文件
+            if ($user->avatar!=null){
+                self::deleteAvatar($user,$path);
+            }
             $user->avatar = $filename.'.'.$this->avatarFile->extension;
             $user->profile = $this->profile;
+            //生成文件完整地址
+            $srcImage = $path.$user->avatar;
+            //可以封装成事务
             if ($user->update(false)){
-                $this->avatarFile->saveAs(\Yii::$app->basePath.'/uploads/'.$filename.'.'.$this->avatarFile->extension);
+                $this->avatarFile->saveAs($srcImage);
+                //转换成100*100的缩略图
+                self::saveAvatar($srcImage,$srcImage);
                 return true;
             }
         }
@@ -140,5 +153,10 @@ class User extends ActiveRecord
 
     public function saveAvatar($srcImage,$aimImage){
         Image::thumbnail($srcImage,100,100)->save($aimImage,['quality'=>100]);
+    }
+
+    public function deleteAvatar($model,$path){
+        $urlImage = $path.$model->avatar;
+        return unlink($urlImage);
     }
 }

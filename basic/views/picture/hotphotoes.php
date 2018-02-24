@@ -4,12 +4,13 @@ use yii\helpers\Html;
 
 
 
-$this->title = 'Picture（最新）';
+$this->title = 'Picture（热门）';
 $this->params['breadcrumbs'][] = $this->title;
 $userModel = new \app\models\User;
+
 ?>
-<?php foreach ($model->showByTime() as $item): ?>
-    <?php $user = $userModel->findeByUid($item->uid); ?>
+<?php foreach ($model->showByLikes() as $item): ?>
+<?php $user = $userModel->findeByUid($item->uid); ?>
     <div class="row">
         <div>
             <img width="25px" style="border-radius: 50% !important; margin-right:5px;" src="../uploads/<?=$user->avatar?>">
@@ -26,6 +27,7 @@ $userModel = new \app\models\User;
     </div>
 
 <?php endforeach; ?>
+
 
 
 

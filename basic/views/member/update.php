@@ -3,7 +3,8 @@
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 
-
+$this->title = '修改个人信息';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 
