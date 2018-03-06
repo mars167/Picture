@@ -9,6 +9,7 @@
 namespace app\controllers;
 
 
+use app\models\Fellow;
 use app\models\Photoes;
 use yii\web\Controller;
 
@@ -46,5 +47,18 @@ class PictureController extends Controller
         $model = new Photoes;
 
         return $this->render('fellowphotoes',['model'=>$model]);
+    }
+
+    public function actionLike(){
+        $model = new Photoes;
+        if (\Yii::$app->request->isPost){
+            $post = \Yii::$app->request->post();
+            $model = Photoes::findOne(['id'=>$post['id']]);
+            $model->likes = $post['like'];
+            if ($model->save(false)){
+                return true;
+            }
+        }
+        return false;
     }
 }
