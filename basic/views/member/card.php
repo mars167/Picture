@@ -1,29 +1,30 @@
 <?php
-use yii\bootstrap\ActiveForm;
+
+/* @var $this yii\web\View */
+/* @var $form yii\bootstrap\ActiveForm */
+/* @var $model app\models\LoginForm */
+
 use yii\helpers\Html;
-use app\models\Fellow;
+use yii\bootstrap\ActiveForm;
 
-
-$this->title = 'Picture（关注）';
+$this->title = '详情';
 $this->params['breadcrumbs'][] = $this->title;
 $uid = Yii::$app->session['uid'];
-$userModel = new \app\models\User;
 $likeModel = new \app\models\Likes;
-$fellow = new Fellow();
-$fellows = $fellow->findFellowByUId($uid);
+$photoes = $photo->showByUid($uid);
 ?>
-
-<?php foreach ($model->showByFellow($uid) as $item): ?>
+<div>
+    <img width="50px" style="border-radius: 50% !important; margin-right:5px;" src="../uploads/<?=$user->avatar?>">
+    <span><?=$user->name?></span>
+    <p><?=$user->profile?></p>
+</div>
+<hr>
+<hr>
+<?php foreach ($photoes as $item): ?>
     <?php
-        $user = $userModel->findeByUid($item->uid);
         $islike = $likeModel->isLike($item->id,$uid);
     ?>
     <div class="row">
-        <div>
-            <img width="25px" style="border-radius: 50% !important; margin-right:5px;" src="../uploads/<?=$user->avatar?>">
-            <span><?=$user->name?></span>
-            <h4><?=$item->title?></h4>
-        </div>
 
         <div>
             <img width="300px" src="../uploads/photoes/<?=$item->photo?>">
@@ -31,11 +32,11 @@ $fellows = $fellow->findFellowByUId($uid);
         <p>likes:<span id="id_<?=$item->id?>"><?=$item->likes == null?0:$item->likes?></span>
             <?=Html::Button('赞',['id'=>$item->id,'style'=>$islike?'display:none':'']) ?>
         </p>
+        <span><?=$item->update_time?></span>
         <hr>
     </div>
 
 <?php endforeach; ?>
-
 <?php
 $url = \yii\helpers\Url::to(["picture/like"]);
 $js = <<<JS
@@ -57,5 +58,3 @@ JS;
 
 $this->registerJs($js);
 ?>
-
-

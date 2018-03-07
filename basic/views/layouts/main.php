@@ -44,6 +44,8 @@ AppAsset::register($this);
             ['label' => '主页（我的）', 'url' => ['/picture/myphotoes']],
             ['label' => '主页（关注）', 'url' => ['/picture/fellowphotoes']],
             ['label' => '照片上传', 'url' => ['/picture/update']],
+            ['label' => '粉丝列表', 'url' => ['/member/fanslist']],
+            ['label' => '关注列表', 'url' => ['/member/fellowlist']],
             !isset(Yii::$app->session['islogin']) ? (
                 ['label' => 'Login', 'url' => ['/member/login']]
             ) : (

@@ -34,21 +34,23 @@ class Fellow extends ActiveRecord
         ];
     }
 
-    public function findPhotoesByUid($uid){
-
-
-    }
-
     public function findFellowByUId($uid){
         return self::findBySql('SELECT f_uid FROM fellow WHERE uid = '.$uid)->all();
-}
+    }
 
     public function findMyFellowByUid($uid){
         return self::findAll(['f_uid'=>$uid]);
     }
 
+    public function findFellow($uid){
+        return self::findAll(['uid'=>$uid]);
+    }
 
-
-
+    public static function isFellow($uid,$f_uid){
+        if (self::findOne(['uid'=>$uid,'f_uid'=>$f_uid])){
+            return true;
+        }
+        return false;
+    }
 
 }
