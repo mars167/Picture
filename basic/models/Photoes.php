@@ -34,6 +34,7 @@ class Photoes extends ActiveRecord
         return [
             'update'=>['title','photo','update_time'],
             'change'=>['title'],
+            'like'=>['likes'],
         ];
     }
 
@@ -77,7 +78,15 @@ class Photoes extends ActiveRecord
         return $result;
     }
 
-    public function showByFellow($fuid){
+    public function showByFellow($uid){
+            $fellow = new Fellow();
+            $fellows = $fellow->findFellowByUId($uid);
+            $f_uid = [];
+            foreach ($fellows as $item){
+                array_push($f_uid,$item->f_uid);
+            }
+            $result = self::find()->where(['uid'=>$f_uid])->orderBy('update_time DESC')->all();
+            return $result;
 
     }
 
@@ -85,4 +94,12 @@ class Photoes extends ActiveRecord
         $result = static::find()->where(['uid'=>$uid])->orderBy('update_time DESC')->all();
         return $result;
     }
+
+    public function getFellow(){
+
+        return $this->hasMany(Fellow::className(),['f_uid'=>'uid']);
+
+    }
+
+
 }
