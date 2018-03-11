@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AACC,uBAAgB;EACf,MAAM,EAAE,IAAI;EAEZ,4DAAW;IACV,MAAM,EAAE,IAAI;EAEb,kCAAU;IACT,MAAM,EAAE,eAAe;IACvB,KAAK,EAAE,eAAe;EAEvB,iCAAS;IACR,WAAW,EAAE,IAAI",
+"sources": ["userList.scss"],
+"names": [],
+"file": "userList.css"
+}

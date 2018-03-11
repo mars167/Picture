@@ -3,8 +3,8 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 
 
-
-$this->title = 'Picture（最新）';
+$this->context->layout = 'layout1';
+$this->title = '最新';
 $this->params['breadcrumbs'][] = $this->title;
 $userModel = new \app\models\User;
 $uid = Yii::$app->session['uid'];
@@ -14,27 +14,42 @@ $likeModel = new \app\models\Likes;
 <?php foreach ($model->showByTime() as $item): ?>
     <?php
         $user = $userModel->findeByUid($item->uid);
-        $islike = $likeModel->isLike($item->id,$uid);
+        $islike = $likeModel->isLike($item->id,$uid)?'disabled':'';
     ?>
-    <div class="row">
-        <div>
-            <img width="25px" style="border-radius: 50% !important; margin-right:5px;" src="../uploads/<?=$user->avatar?>">
-            <span><?=$user->name?></span>
-            <?=Html::a($user->name,['member/card','uid'=>$user->uid])?>
-            <h4><?=$item->title?></h4>
-        </div>
 
-        <div>
-            <img width="300px" src="../uploads/photoes/<?=$item->photo?>">
+    <div id="stage">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-2 avator">
+                        <img src="../uploads/<?=$user->avatar?>" alt="avator" class="rounded-circle">
+                    </div>
+                    <div class="col-10">
+                        <?=Html::a($user->name,['member/card','uid'=>$user->uid])?>
+                    </div>
+                </div>
+                <p class="card-text mt-2" id="text"><?=$item->title?></p>
+            </div>
+            <img class="card-img-top" src="../uploads/photoes/<?=$item->photo?>" alt="Card image cap">
+            <div class="card-body">
+                <hr>
+                <div class="row">
+                    <div class="col-7">
+                        <?=Html::Button('',['id'=>$item->id,"$islike"=>'','class'=>'like oi oi-thumb-up']) ?>
+                        <span class="likeAmt" id="id_<?=$item->id?>"  ><?=$item->likes == null?0:$item->likes?></span>
+                    </div>
+                    <div class="col-5">
+                        <span class="" id="date"><?=$item->update_time?></span>
+                    </div>
+                </div>
+            </div>
         </div>
-        <p>likes:<span id="id_<?=$item->id?>"><?=$item->likes == null?0:$item->likes?></span>
-            <?=Html::Button('赞',['id'=>$item->id,'style'=>$islike?'display:none':'']) ?>
-        </p>
-        <span><?=$item->update_time?></span>
-        <hr>
     </div>
-
 <?php endforeach; ?>
+
+
+
+
 <?php
 $url = \yii\helpers\Url::to(["picture/like"]);
 $js = <<<JS
