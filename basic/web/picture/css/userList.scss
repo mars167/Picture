@@ -1,0 +1,16 @@
+#stage{
+	.list-group-item{
+		height: 70px;
+
+		.row,.col-2{
+			height: 100%;
+		}
+		.col-2 img{
+			height: 40px !important;
+			width: 40px !important;
+		}
+		.col-10 p{
+			line-height: 40px;
+		}
+	}
+}

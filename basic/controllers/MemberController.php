@@ -62,10 +62,18 @@ class MemberController extends Controller
             $this->redirect(['member/login']);
             \Yii::$app->end();
         }
-
         $user = $model->findeByUid(\Yii::$app->session['uid']);
 
-        return $this->render('profile',['user'=>$user]);
+        $fans = (new \yii\db\Query())
+            ->from('fellow')
+            ->where(['f_uid' =>\Yii::$app->session['uid'] ])
+            ->count();
+        $fellow = (new \yii\db\Query())
+            ->from('user')
+            ->where(['uid' => \Yii::$app->session['uid']])
+            ->count();
+
+        return $this->render('profile',['user'=>$user,'fans'=>$fans,'fellow'=>$fellow]);
     }
 
     public function actionUpdate(){

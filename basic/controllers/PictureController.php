@@ -12,10 +12,17 @@ namespace app\controllers;
 use app\models\Fellow;
 use app\models\Likes;
 use app\models\Photoes;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 
 class PictureController extends Controller
 {
+
+
+    public function beforeAction($action){
+        return true;
+    }
+
     public function actionIndex(){
         $model = new Photoes;
 

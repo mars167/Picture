@@ -3,9 +3,10 @@
 namespace app\models;
 
 use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
 use yii\web\UploadedFile;
 use yii\imagine\Image;
-class User extends ActiveRecord
+class User extends ActiveRecord implements IdentityInterface
 {
     public $avatarFile;
     public $rememberme;
@@ -151,12 +152,82 @@ class User extends ActiveRecord
     }
 
 
+
+
+
+    public function getAuthKey()
+    {
+        //  TODO: Implement getAuthKey() method.
+        return '';
+    }
+
+    public function validateAuthKey($authKey)
+    {
+        // TODO: Implement validateAuthKey() method.
+        return true;
+    }
+
+    public function getId()
+    {
+        // TODO: Implement getId() method.
+        return $this->uid;
+    }
+
+
+
+    public static function findIdentity($id)
+    {
+        // TODO: Implement findIdentity() method.
+        return static::findOne(['uid'=>$id]);
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        // TODO: Implement findIdentityByAccessToken() method.
+        return null;
+    }
+
+
     public function saveAvatar($srcImage,$aimImage){
-        Image::thumbnail($srcImage,100,100)->save($aimImage,['quality'=>100]);
+        Image::thumbnail($srcImage,400,300)->save($aimImage,['quality'=>100]);
     }
 
     public function deleteAvatar($model,$path){
         $urlImage = $path.$model->avatar;
         return unlink($urlImage);
     }
+    /**
+     * @return mixed
+     */
+    public function getAvatarFile()
+    {
+        return $this->avatarFile;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRememberme()
+    {
+        return $this->rememberme;
+    }
+
+    /**
+     * @param mixed $avatarFile
+     */
+    public function setAvatarFile($avatarFile)
+    {
+        $this->avatarFile = $avatarFile;
+    }
+
+    /**
+     * @param mixed $rememberme
+     */
+    public function setRememberme($rememberme)
+    {
+        $this->rememberme = $rememberme;
+    }
+
+
+
 }
